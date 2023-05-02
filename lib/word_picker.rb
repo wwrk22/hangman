@@ -23,7 +23,3 @@ class WordPicker
   end
 
 end
-
-
-wp = WordPicker.new('./words.txt')
-puts wp.random_word
