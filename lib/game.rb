@@ -14,9 +14,22 @@ class Game
     @guess_count = 0
   end
 
+  def play_guess
+    display_progress
+    guess
+  end
+
   def display_progress
     @word.each_char { |ch| @guess_pool.include?(ch) ? (print ch) : (print '_') }
-    puts "#{@guess_pool}  -  #{@guess_count}"
+    puts
+    puts "Letters guessed so far: #{pretty_print_pool}"
+    puts "You have #{MAX_GUESS - @guess_count} guesses left."
+  end
+
+  def pretty_print_pool
+    pretty_print = @guess_pool.reduce('') { |str, letter| str += "#{letter}, " }
+    return pretty_print[0..-3] if pretty_print
+    return ''
   end
 
   def guess
@@ -54,10 +67,6 @@ end
 
 g = Game.new('./words.txt')
 g.start
-g.display_progress
-g.guess
-g.display_progress
-g.guess
-g.display_progress
-g.guess
-g.display_progress
+g.play_guess
+g.play_guess
+g.play_guess
