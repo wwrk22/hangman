@@ -8,20 +8,34 @@ class Game
     @wp = WordPicker.new(word_file)
   end
   
-  def start
-    @word = @wp.random_word
+  def setup_game
+    @secret_word = @wp.random_word
+    @current_word = ''
     @guess_pool = Set.new
     @guess_count = 0
+  end
+
+  def start
+    setup_game
   end
 
   def play_guess
     display_progress
     guess
+    check_game_over
+  end
+
+  def check_game_over
+    
   end
 
   def display_progress
-    @word.each_char { |ch| @guess_pool.include?(ch) ? (print ch) : (print '_') }
-    puts
+    @current_word = ''
+    @secret_word.each_char.reduce(@current_word) do |ch|
+      @guess_pool.include?(ch) ? (@current_word << ch) : (@current_word << '_')
+      @current_word
+    end
+    puts "#{@current_word}"
     puts "Letters guessed so far: #{pretty_print_pool}"
     puts "You have #{MAX_GUESS - @guess_count} guesses left."
   end
@@ -33,8 +47,10 @@ class Game
   end
 
   def guess
-    letter = prompt_input until add_to_pool(letter)
-    @guess_count += 1
+    if @guess_count < MAX_GUESS
+      letter = prompt_input until add_to_pool(letter)
+      @guess_count += 1
+    end
   end
 
   def prompt_input
