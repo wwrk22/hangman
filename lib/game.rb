@@ -39,9 +39,15 @@ class Game
   end
 
   def add_to_pool(letter)
-    return false if (letter == nil) || (@guess_pool.include? letter)
-    @guess_pool << letter
-    return true
+    return false if letter == nil
+
+    if @guess_pool.include? letter
+      puts "You already guessed '#{letter}'."
+      return false
+    else
+      @guess_pool << letter
+      return true
+    end
   end
 end
 
