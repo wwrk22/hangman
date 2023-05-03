@@ -100,7 +100,3 @@ class Game
     end
   end
 end
-
-
-g = Game.new('./words.txt')
-g.start
