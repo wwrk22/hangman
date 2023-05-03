@@ -19,22 +19,30 @@ class Game
     setup_game
   end
 
-  def play_guess
+  # This method does not account for the number of guesses remaining.
+  def play_a_guess
     display_progress
     guess
-    check_game_over
-  end
-
-  def check_game_over
-    
+    @current_word == @secret_word
   end
 
   def display_progress
     @current_word = ''
     @secret_word.each_char.reduce(@current_word) do |ch|
-      @guess_pool.include?(ch) ? (@current_word << ch) : (@current_word << '_')
-      @current_word
+      update_current_word
     end
+    print_progress
+  end
+
+  # Helper
+  # @current_word must be reset to '' before calling this method.
+  def update_current_word(ch)
+    @guess_pool.include?(ch) ? (@current_word << ch) : (@current_word << '_')
+    @current_word 
+  end
+
+  # Helper
+  def print_progress
     puts "#{@current_word}"
     puts "Letters guessed so far: #{pretty_print_pool}"
     puts "You have #{MAX_GUESS - @guess_count} guesses left."
@@ -47,10 +55,10 @@ class Game
   end
 
   def guess
-    if @guess_count < MAX_GUESS
-      letter = prompt_input until add_to_pool(letter)
-      @guess_count += 1
-    end
+    letter = prompt_input until add_to_pool(letter)
+    @guess_count += 1
+
+    return @current_word == @secret_word
   end
 
   def prompt_input
