@@ -12,7 +12,7 @@ class Game
     @secret_word = @wp.random_word
     @guess_pool = Set.new
     @guess_count = 0
-    @result = "You lose! The word is #{@secret_word}."
+    @result = "\nYou lose! The word is #{@secret_word}."
   end
 
   def start
@@ -27,7 +27,6 @@ class Game
     end
 
     puts @result
-    puts "guess count = #{@guess_count}"
   end
 
   # This method does not account for the number of guesses remaining.
@@ -41,7 +40,7 @@ class Game
   # Helper
   def check_guess?
     if @current_word == @secret_word
-      @result = "You win! The word is #{@secret_word}."
+      @result = "\nYou win! The word is #{@secret_word}."
       return true
     end
 
@@ -79,7 +78,7 @@ class Game
     loop do
       print "Guess a letter: "
       letter = gets.chomp
-      alphabet?(letter) ? (return letter) : (puts "Invalid input.")
+      alphabet?(letter) ? (return letter.downcase) : (puts "Invalid input.")
     end
   end
 
@@ -93,7 +92,7 @@ class Game
     return false if letter == nil
 
     if @guess_pool.include? letter
-      puts "You already guessed '#{letter}'."
+      puts "You already guessed '#{letter}'.\n"
       return false
     else
       @guess_pool << letter
