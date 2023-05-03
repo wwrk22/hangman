@@ -10,26 +10,46 @@ class Game
   
   def setup_game
     @secret_word = @wp.random_word
-    @current_word = ''
     @guess_pool = Set.new
     @guess_count = 0
+    @result = "You lose! The word is #{@secret_word}."
   end
 
   def start
     setup_game
+    play_a_round
+  end
+
+  def play_a_round
+    until @guess_count == MAX_GUESS do
+      break if play_a_guess
+      @guess_count += 1
+    end
+
+    puts @result
   end
 
   # This method does not account for the number of guesses remaining.
   def play_a_guess
     display_progress
     guess
-    @current_word == @secret_word
+    check_guess?
+  end
+
+  # Helper
+  def check_guess?
+    if @current_word == @secret_word
+      @result = "You win! The word is #{@secret_word}."
+      true
+    end
+
+    false
   end
 
   def display_progress
     @current_word = ''
-    @secret_word.each_char.reduce(@current_word) do |ch|
-      update_current_word
+    @secret_word.each_char.reduce(@current_word) do |word, ch|
+      update_current_word(ch)
     end
     print_progress
   end
@@ -37,6 +57,8 @@ class Game
   # Helper
   # @current_word must be reset to '' before calling this method.
   def update_current_word(ch)
+    # debug
+    puts "Checking for letter #{ch}"
     @guess_pool.include?(ch) ? (@current_word << ch) : (@current_word << '_')
     @current_word 
   end
@@ -56,9 +78,6 @@ class Game
 
   def guess
     letter = prompt_input until add_to_pool(letter)
-    @guess_count += 1
-
-    return @current_word == @secret_word
   end
 
   def prompt_input
@@ -91,6 +110,3 @@ end
 
 g = Game.new('./words.txt')
 g.start
-g.play_guess
-g.play_guess
-g.play_guess
