@@ -8,6 +8,7 @@ class Game
   def initialize(word_file)
     @wp = WordPicker.new(word_file)
     @game_saver = GameDataSaver.new
+    @game_saved = false
   end
   
   def setup_new
@@ -20,7 +21,7 @@ class Game
     @game_saver.update_id(123)
     @game_saver.load_data
     @secret_word = @game_saver.game_data.secret_word
-    @guess_pool = @game_saver.game_data.guess_pool
+    @guess_pool = Set.new(@game_saver.game_data.guess_pool)
     @guess_count = @game_saver.game_data.guess_count
   end
 
@@ -41,7 +42,7 @@ class Game
   end
 
   def play_a_round
-    until @guess_count == MAX_GUESS do
+    until @guess_count == MAX_GUESS || @game_saved do
       break if play_a_guess
       @guess_count += 1
     end
@@ -90,16 +91,28 @@ class Game
   end
 
   def guess
-    letter = prompt_input until add_to_pool(letter)
+    input = prompt_input until add_to_pool(input) || save_game(input)
     update_current_word
   end
 
   def prompt_input
     loop do
-      print "Guess a letter: "
-      letter = gets.chomp
-      alphabet?(letter) ? (return letter.downcase) : (puts "Invalid input.")
+      print "Guess a letter (enter \"save\" to save game): "
+      input = gets.chomp
+      return input if input == "save"
+      alphabet?(input) ? (return input.downcase) : (puts "Invalid input.")
     end
+  end
+
+  def save_game(input)
+    if input == 'save'
+      @game_saver.update_data(GameData.new(123, @secret_word, @guess_count, @guess_pool.to_a))
+      @game_saver.save_data
+      @game_saved = true
+      @result = "Saved game #{@game_saver.game_data.id}."
+    end
+
+    return @game_saved
   end
 
   def alphabet?(letter) 
@@ -109,7 +122,7 @@ class Game
   end
 
   def add_to_pool(letter)
-    return false if letter == nil
+    return false if letter == nil || letter == 'save'
 
     if @guess_pool.include? letter
       puts "You already guessed '#{letter}'.\n"
