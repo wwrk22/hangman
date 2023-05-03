@@ -3,12 +3,16 @@ require_relative './game_data'
 class GameDataSaver
   attr_reader :game_data
 
-  def initialize(game_data=nil)
+  def initialize(game_data=GameData.new(0, '', 0, []))
     @game_data = game_data
   end
 
   def update_data(new_data)
     @game_data = new_data
+  end
+
+  def update_id(new_id)
+    @game_data.id = new_id
   end
 
   def save_data

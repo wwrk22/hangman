@@ -1,1 +1,1 @@
-{"@id":123,"@secret_word":"foo","@guess_count":5,"@guess_pool":["a","b","c"]}
+{"@id":123,"@secret_word":"foobar","@guess_count":5,"@guess_pool":["a","b","c"]}

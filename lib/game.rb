@@ -1,4 +1,5 @@
 require_relative './word_picker'
+require_relative './game_data_saver'
 require 'set'
 
 class Game
@@ -6,16 +7,35 @@ class Game
 
   def initialize(word_file)
     @wp = WordPicker.new(word_file)
+    @game_saver = GameDataSaver.new
   end
   
-  def setup_game
+  def setup_new
     @secret_word = @wp.random_word
     @guess_pool = Set.new
     @guess_count = 0
-    @result = "\nYou lose! The word is #{@secret_word}."
+  end
+
+  def load_saved
+    @game_saver.update_id(123)
+    @game_saver.load_data
+    @secret_word = @game_saver.game_data.secret_word
+    @guess_pool = @game_saver.game_data.guess_pool
+    @guess_count = @game_saver.game_data.guess_count
+  end
+
+  def setup_game
+    if gets.chomp.downcase == 'l'
+      load_saved
+    else
+      setup_new
+    end
   end
 
   def start
+    @result = "\nYou lose! The word is #{@secret_word}."
+    puts "-- HANGMAN --"
+    print "Enter any key to start a new game or 'l/L' to load last saved game: "
     setup_game
     play_a_round
   end
