@@ -1,22 +1,24 @@
 require_relative './game_data'
 
 class GameDataSaver
-  def initialize(game_data)
+  attr_reader :game_data
+
+  def initialize(game_data=nil)
     @game_data = game_data
   end
 
-  def overwrite_data(new_data)
+  def update_data(new_data)
     @game_data = new_data
   end
 
   def save_data
-    file = File.open(get_filename, 'w')
+    file = File.open(get_filepath, 'w')
     file.write @game_data.serialize
     file.close
   end
 
   def load_data
-    file = File.open(get_filename, 'r')
+    file = File.open(get_filepath, 'r')
     @game_data.deserialize(file.read)
     file.close
   end
@@ -25,7 +27,7 @@ class GameDataSaver
   private
 
   # Helper
-  def get_filename
-    "#{@game_data.id}.txt"
+  def get_filepath
+    "./saved_games/#{@game_data.id}.txt"
   end
 end

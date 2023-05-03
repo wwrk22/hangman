@@ -1,0 +1,1 @@
+{"@id":123,"@secret_word":"foo","@guess_count":5,"@guess_pool":["a","b","c"]}
