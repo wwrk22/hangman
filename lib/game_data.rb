@@ -1,4 +1,8 @@
+require_relative './json_serializable'
+
 class GameData
+  include JsonSerializable
+
   attr_accessor :secret_word, :guess_count, :guess_pool
 
   def initialize(secret_word, guess_count, guess_pool)
